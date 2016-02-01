@@ -12,18 +12,19 @@ Requirements:
 
 Open Terminal and paste the following commands:
 
-$ mkdir Flask_Server (Directory name must not contain spaces)
-$ cd Flask_Server
+
 $ git clone https://github.com/manalishah/Flask_REST_Server.git
+$ cd Flask_REST_Server
 $ virtualenv <Name_Of_VirtualEnv>
+
+For the server to run with the right configurations, your virtualenv must be activated:
 $ source <Name_Of_VirtualEnv>/bin/activate
-$ pip install flask
-$ pip install nltk numpy
+
+$ pip install flask nltk numpy
 $ chmod a+x run.py
 
-In order to start the server simply paste
+In order to start the server anytime simply paste this command:
 $ ./run.py
-
 
 
 Now you will see the that the server is up and ready at localhost:5000

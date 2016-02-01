@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import nltk
-
+import json
 def processSpecific(content):
     tokenized = nltk.word_tokenize(content)
     tagged = nltk.pos_tag(tokenized)
@@ -15,7 +15,6 @@ def processSpecific(content):
                 value += each_ne[i][0] + ' '
             value = value.strip()
             NE.add(value)
-       
     namedEnt = nltk.ne_chunk(tagged)
     for each_ne in namedEnt:
         if isinstance(each_ne, nltk.tree.Tree):
@@ -27,8 +26,16 @@ def processSpecific(content):
                 NE.remove(value)
             Entities[each_ne.label()].add(value)
     Entities['NE'] = NE
+    result = {}
+    for each in Entities.keys():
+        if len(Entities[each]) is 0:
+            continue
+        else:
+            result[each] = list(Entities[each])
+    j = json.dumps(result)
+    return j
 
-    return str(Entities)
+
 
 #print(processSpecific('Barack Obama must win again',''))
 #content = 'Barack Obama must win against Bill Clinton in the America. Brazil won the world cup last year.'

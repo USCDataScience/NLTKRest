@@ -19,8 +19,8 @@ $ virtualenv <Name_Of_VirtualEnv>
 
 For the server to run with the right configurations, your virtualenv must be activated:
 $ source <Name_Of_VirtualEnv>/bin/activate
-
 $ pip install flask nltk numpy
+$ python -m nltk.downloader all
 $ chmod a+x run.py
 
 In order to start the server anytime simply paste this command:

@@ -16,7 +16,7 @@ $ mkdir Flask_Server (Directory name must not contain spaces)
 $ cd Flask_Server
 $ git clone https://github.com/manalishah/Flask_REST_Server.git
 $ virtualenv <Name_Of_VirtualEnv>
-$ source <Name_Of_VirtualEnv>/bin/actiavte
+$ source <Name_Of_VirtualEnv>/bin/activate
 $ pip install flask
 $ pip install nltk numpy
 $ chmod a+x run.py

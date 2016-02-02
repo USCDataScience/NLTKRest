@@ -29,7 +29,12 @@ $ ./run.py
 
 Now you will see the that the server is up and ready at localhost:5000
 
-Open another Terminal and paste this line to test the server returns the Named Entities Using NLTK library.
+Open another Terminal and paste run these commands to test the server returns the Named Entities Using NLTK library.
 
-$ java -cp TikaNER-0.0.1-SNAPSHOT.jar usc.cs599.TikaNLTK “<TEXT to be recognized>”
+Compile:
+$ cd NlTKClient
+$ javac -d bin -sourcepath src -cp lib/httpclient-4.5.1.jar:lib/httpcore-4.4.3.jar:lib/commons-logging-1.2.jar src/usc/cs599/TikaNLTK.java
+
+Run: <Supply any text that you want to tag withing the quotes>
+$ java -cp bin:lib/httpclient-4.5.1.jar:lib/httpcore-4.4.3.jar:lib/commons-logging-1.2.jar usc.cs599.TikaNLTK "America is huge."
 

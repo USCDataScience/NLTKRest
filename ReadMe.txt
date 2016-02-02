@@ -29,7 +29,7 @@ $ ./run.py
 
 Now you will see the that the server is up and ready at localhost:5000
 
-Open another Terminal and paste run these commands to test the server returns the Named Entities Using NLTK library.
+Open another Terminal and paste these commands to test how the server returns the Named Entities Using NLTK library.
 
 Compile:
 $ cd NlTKClient

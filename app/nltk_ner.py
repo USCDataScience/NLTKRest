@@ -24,7 +24,11 @@ def processSpecific(content):
             value = value.strip()
             if value in NE:
                 NE.remove(value)
-            Entities[each_ne.label()].add(value)
+            if each_ne.label() in Entities:
+                Entities[each_ne.label()].add(value)
+	    else:
+		Entities[each_ne.label()] = set()
+		Entities[each_ne.label()].add(value)
     Entities['NE'] = NE
     result = {}
     for each in Entities.keys():

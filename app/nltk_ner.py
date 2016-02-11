@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 import nltk
 import json
+import timex
 def processSpecific(content):
     tokenized = nltk.word_tokenize(content)
+    time = timex.tag(tokenized)
     tagged = nltk.pos_tag(tokenized)
     namedEnt = []
     Entities = {'PERSON':set(), 'LOCATION':set(), 'GPE':set(), 'FACILITY':set()}
+    Entities['TIME'] = time
     NE = set()
     namedEnt = nltk.ne_chunk(tagged, binary=True)
     for each_ne in namedEnt:

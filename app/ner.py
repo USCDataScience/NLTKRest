@@ -5,6 +5,6 @@ import test
 
 @app.route('/nltk', methods = ['GET', 'POST'])
 def nltk():
-    return test.processSpecific(request.form['text'])
+    return nltk_ner.processSpecific(request.form['text'])
      
 

@@ -1,2 +1,7 @@
 .DS_Store
 *.pyc
+target/*
+*.class
+.project
+.settings
+.classpath

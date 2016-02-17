@@ -19,9 +19,9 @@ class my_install(install):
         install.run(self)
         self.execute(_post_install, [], msg='running _post_install task')
 
-# class my_develop(develop):
-#     def run(self):
-#         develop.run(self)
+class my_develop(develop):
+    def run(self):
+        develop.run(self)
 
 short_description='NLTK endpoint for TIKA Named Entity Recognition '
 long_description=short_description
@@ -40,5 +40,5 @@ setup(
         license=LICENSE,
         install_requires=['nltk','numpy','egenix-mx-base','flask'],
         packages=find_packages(),
-        cmdclass={'install':my_install,},
+        cmdclass={'install':my_install,'develop':my_develop},
         )

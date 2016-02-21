@@ -103,8 +103,6 @@ def main(argv=None):
         elif opt in ('-v', '--verbose'): Verbose = 1
         else: die(USAGE)
 
-    echo2("Downloading NLTK data before starting.")
-    nltk.download("brown")
     app.run(debug=Verbose, port=port)
 
 if __name__ == '__main__':

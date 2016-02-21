@@ -30,7 +30,15 @@ def _post_install():
     print('downloaded brown')
     from nltk.corpus import brown
     print(brown.words()[0:4])
+    nltk.download('punkt')
+    print('Downloaded punkt tokenizer and corpus')
     print('_post_install complete')
+    nltk.download('maxent_treebank_pos_tagger')
+    print ('Downloaded Maximum Extent Treebank Position Tagger')
+    nltk.download('maxent_ne_chunker')
+    print ('Downloaded Maximum Extent Named Entity Chunker')
+    nltk.download('words')
+    print ('Downloaded NLTK corpora/words')
 
 class my_install(install):
     def run(self):

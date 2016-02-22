@@ -38,3 +38,17 @@ Connecting to NLTKRest at: [http://localhost:8881/nltk]
     "result": "success"
 }
 ```
+
+
+Questions, comments?
+===================
+Send them to [Manali Shah](manalids@usc.edu) or [Chris A. Mattmann](mailto:chris.a.mattmann@jpl.nasa.gov).
+
+Contributors
+============
+* Manali Shah, USC
+* Chris A. Mattmann, USC & JPL
+
+License
+=======
+[Apache License, version 2](http://www.apache.org/licenses/LICENSE-2.0)

@@ -14,35 +14,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uscir.NLTKRest_Client;
+package edu.usc.cs.ir.nltkrest;
 
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
 import org.apache.cxf.jaxrs.client.WebClient;
-public class ClientDemo 
+
+public class CXFClient 
 {
 	
     public static void main( String[] args )
     {
-        String text="";
+        StringBuilder text= new StringBuilder();
         if (args.length > 0) {
-        	text = args[0];
+	    for (String arg: args){
+		text.append(arg);
+		text.append(" ");
+	    }
         }
-        String result = getNER(text);
+	else{
+	    System.err.println("CXFClient <text to be analyzed>");
+	    System.err.println("Must provide text as arguments to this program for NER analysis.");
+	    System.exit(2);
+	}
+
+	System.out.println("Performing NLTK analysis on text: "+text.toString());
+        String result = getNER(text.toString());
         System.out.println(result);
     }
     
     public static String getNER(String text) {
-    	String url = "http://localhost:5000/nltk";
-    	Response response = WebClient.create(url).form(new Form("text", text));
+    	String url = "http://localhost:8881/nltk";
+	System.out.println("Connecting to NLTKRest at: ["+url+"]");
+    	Response response = WebClient.create(url).put(text);
         String result = response.readEntity(String.class);
-		return result;
+	return result;
     }
     
-    public static int checkConnection() {
-    	String url = "http://localhost:5000/index";
-    	Response response = WebClient.create(url).get();
-        int status = response.getStatus();
-		return status;
-    }
 }

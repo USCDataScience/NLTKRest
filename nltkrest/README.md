@@ -1,27 +1,60 @@
+# NLTK REST Server
 
-Mac OS
+This is a simple implementation that allows the Python [Natural Language Toolkit (NLTK)](http://nltk.org/)
+to be called as a REST service. The package can be installed via pip and/or via setuptools.
 
-Requirements:
-1. python
-2. pip
-3. virtualenv
+## Installation
 
-	If virtualenv is not present:
-	$ pip install virtualenv
+### Simple with PIP
 
+ 1. Just run `pip install nltkrest`
 
-Open Terminal and paste the following commands:
+### Setuptools and/or Distribute
+ 
+ 1. Just run `python setup.py install`
 
+After installation you will have a command called `nltk-rest`. By default it starts a REST server
+on port `8881`. You can change the port by typing `--port or -p`. You can also turn on verbose 
+mode by typing `-v`.
 
-	$ git clone https://github.com/manalishah/Flask_REST_Server.git
-	$ cd Flask_REST_Server
-	$ virtualenv <Name_Of_VirtualEnv>
-	$ source <Name_Of_VirtualEnv>/bin/activate
-	$ setup.py develop install
+## Start the NLTK Server 
 
+To begin, start the server, turn on verbose mode, and change the port to 8888.
 
-Now you will see the that the server is up and ready at localhost:5000/
+`nltk-rest -v --port 8888`
 
-Open another Terminal and paste these commands to test how the server returns the Named Entities Using NLTK library.
+## Example cURL client command
 
+Now from the client, execute the following command:
 
+`curl -X POST -d "Hi, my name is Abraham Lincoln. I live in Los Angeles, California." http://localhost:8888/nltk`
+
+You should see back:
+
+```
+{
+    "names": [
+        "Hi",
+        "Abraham Lincoln",
+        "Los Angeles",
+        "California"
+    ],
+    "result": "success"
+}
+```
+
+You can use `PUT` or `POST` to send a message to the server. Also if you just contact at the `/` default endpoint,
+you will see an HTML page that prints the status of the service.
+
+Questions, comments?
+===================
+Send them to [Manali Shah](manalids@usc.edu) or [Chris A. Mattmann](mailto:chris.a.mattmann@jpl.nasa.gov).
+
+Contributors
+============
+* Manali Shah, USC
+* Chris A. Mattmann, USC & JPL
+
+License
+=======
+[Apache License, version 2](http://www.apache.org/licenses/LICENSE-2.0)

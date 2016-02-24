@@ -39,6 +39,12 @@ def _post_install():
     print ('Downloaded Maximum Extent Named Entity Chunker')
     nltk.download('words')
     print ('Downloaded NLTK corpora/words')
+    try:
+        from nltk_contrib import timex
+    except ImportError:
+        print("error: nltk_contrib not downloaded")
+    else:
+        print("nltk_contrib downloaded")
 
 class my_install(install):
     def run(self):
@@ -63,7 +69,7 @@ try:
 except ImportError:
     from distutils.core import setup, find_packages
 
-version = '0.10'
+version = '0.10.1'
 
 _descr = u'''
 **********
@@ -124,8 +130,10 @@ setup(
         'nltk',
         'numpy',
         'egenix-mx-base',
-        'flask'
+        'flask',
+        'nltk_contrib==3.1'
     ],
+    dependency_links=['git+https://github.com/manalishah/nltk_contrib.git#egg=nltk_contrib-3.1'],
     extras_require={
     },
 )

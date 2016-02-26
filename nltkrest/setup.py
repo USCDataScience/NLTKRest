@@ -39,12 +39,8 @@ def _post_install():
     print ('Downloaded Maximum Extent Named Entity Chunker')
     nltk.download('words')
     print ('Downloaded NLTK corpora/words')
-    try:
-        from nltk_contrib import timex
-    except ImportError:
-        print("error: nltk_contrib not downloaded")
-    else:
-        print("nltk_contrib downloaded")
+    nltk.download('averaged_perceptron_tagger')
+    print ('Downloaded NLTK tagger/averaged_perceptron')
 
 class my_install(install):
     def run(self):
@@ -69,7 +65,7 @@ try:
 except ImportError:
     from distutils.core import setup, find_packages
 
-version = '0.10.1'
+version = '0.11'
 
 _descr = u'''
 **********
@@ -77,7 +73,7 @@ nltkREST
 ***************
 
 .. contents::
-NLTK as a REST based library.
+NLTK as a REST based library for exposing NLTK.
 '''
 _keywords = 'nltk REST'
 _classifiers = [

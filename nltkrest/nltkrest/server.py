@@ -58,7 +58,6 @@ def namedEntityRecognizer():
         echo2("Incoming content is "+content)
     start = time.time()
     date_time = timex.tag(content)
-    print("from nltk_contrib.timex" + str(date_time))
     tokenized = nltk.word_tokenize(content)
     tagged = nltk.pos_tag(tokenized)
     namedEnt = nltk.ne_chunk(tagged, binary=True)

@@ -39,6 +39,8 @@ def _post_install():
     print ('Downloaded Maximum Extent Named Entity Chunker')
     nltk.download('words')
     print ('Downloaded NLTK corpora/words')
+    nltk.download('averaged_perceptron_tagger')
+    print ('Downloaded NLTK tagger/averaged_perceptron')
 
 class my_install(install):
     def run(self):
@@ -63,7 +65,7 @@ try:
 except ImportError:
     from distutils.core import setup, find_packages
 
-version = '0.10'
+version = '0.11'
 
 _descr = u'''
 **********
@@ -71,7 +73,7 @@ nltkREST
 ***************
 
 .. contents::
-NLTK as a REST based library.
+NLTK as a REST based library for exposing NLTK.
 '''
 _keywords = 'nltk REST'
 _classifiers = [
@@ -124,8 +126,10 @@ setup(
         'nltk',
         'numpy',
         'egenix-mx-base',
-        'flask'
+        'flask',
+        'nltk_contrib==3.1'
     ],
+    dependency_links=['git+https://github.com/manalishah/nltk_contrib.git#egg=nltk_contrib-3.1'],
     extras_require={
     },
 )

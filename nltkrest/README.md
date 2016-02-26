@@ -8,6 +8,11 @@ to be called as a REST service. The package can be installed via pip and/or via 
 ### Simple with PIP
 
  1. Just run `pip install nltkrest`
+ 
+Please note, that b/c of the [NLTK Contrib](http://github.com/manalishah/nltk_contrib) fork
+that we depend on and overall the fork and its upstreams unavailability in PyPI, we have to
+use dependency_links, which may not be supported in pip in the future. You may need to pass
+the `--process-dependency-links` to pip in order to install the software.
 
 ### Setuptools and/or Distribute
  
@@ -38,6 +43,29 @@ You should see back:
         "Abraham Lincoln",
         "Los Angeles",
         "California"
+    ],
+    "result": "success"
+}
+```
+
+## Example cURL client command with Dates/Times
+
+We have added support for dates/times using the [NLTK Contrib Timex](https://github.com/nltk/nltk_contrib/blob/master/nltk_contrib/timex.py)
+module. You can test it out by adding some date/time information to your text.
+
+`curl -X POST -d "Hi, my name is Abraham Lincoln. I live in Los Angeles, California. Let's hang out tomorrow, Friday, February 26, 2016." http://localhost:8881/nltk`
+
+Which should return:
+
+```
+{
+    "names": [
+        "Hi",
+        "Abraham Lincoln",
+        "Los Angeles",
+        "California",
+        "tomorrow",
+        "2016"
     ],
     "result": "success"
 }

@@ -20,7 +20,7 @@
 from flask import Flask, request
 import nltk
 import json
-import timex
+from nltk_contrib import timex
 import time
 import sys
 import getopt
@@ -57,11 +57,12 @@ def namedEntityRecognizer():
     if Verbose:
         echo2("Incoming content is "+content)
     start = time.time()
-    timer = timex.tag(content)
+    date_time = timex.tag(content)
     tokenized = nltk.word_tokenize(content)
     tagged = nltk.pos_tag(tokenized)
     namedEnt = nltk.ne_chunk(tagged, binary=True)
     names = extract_entity_names(namedEnt)
+    names.extend(date_time)
     result = {"result" : "success", "names" : names}
     jsonDoc = json.dumps(result, sort_keys=True, indent=4, separators=(',', ': '))
     end = time.time()

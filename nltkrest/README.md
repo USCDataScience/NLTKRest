@@ -18,7 +18,7 @@ the `--process-dependency-links` to pip in order to install the software.
  
  1. Just run `python setup.py install`
 
-After installation you will have a command called `nltk-rest`. By default it starts a REST server
+After installation you will have a command called `nltk-server`. By default it starts a REST server
 on port `8881`. You can change the port by typing `--port or -p`. You can also turn on verbose 
 mode by typing `-v`.
 
@@ -26,7 +26,7 @@ mode by typing `-v`.
 
 To begin, start the server, turn on verbose mode, and change the port to 8888.
 
-`nltk-rest -v --port 8888`
+`nltk-server -v --port 8888`
 
 ## Example cURL client command
 

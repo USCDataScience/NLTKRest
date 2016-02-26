@@ -22,9 +22,6 @@ import nltk
 import json
 <<<<<<< HEAD
 from nltk_contrib import timex
-=======
-#import timex
->>>>>>> 2c55479b6cbbe0d0b908071e148dfa04732b321d
 import time
 import sys
 import getopt
@@ -61,11 +58,7 @@ def namedEntityRecognizer():
     if Verbose:
         echo2("Incoming content is "+content)
     start = time.time()
-<<<<<<< HEAD
     date_time = timex.tag(content)
-=======
-    #timer = timex.tag(content)
->>>>>>> 2c55479b6cbbe0d0b908071e148dfa04732b321d
     tokenized = nltk.word_tokenize(content)
     tagged = nltk.pos_tag(tokenized)
     namedEnt = nltk.ne_chunk(tagged, binary=True)

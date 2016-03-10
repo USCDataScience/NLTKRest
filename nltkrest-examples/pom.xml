@@ -45,9 +45,34 @@ the License.
         <url>https://github.com/manalishah/NLTKRest.git</url>
         <connection>scm:git:git://github.com/manalishah/NLTKRest.git</connection>
     </scm>
+    <properties>
+      <maven.compiler.target>1.7</maven.compiler.target>
+      <maven.compiler.source>1.7</maven.compiler.source>
+   	</properties>
   <build>
    <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
    <plugins>
+      <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>animal-sniffer-maven-plugin</artifactId>
+            <version>1.7</version>
+            <executions>
+               <execution>
+                  <id>signature-check</id>
+                  <phase>verify</phase>
+                  <goals>
+                     <goal>check</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <configuration>
+               <signature>
+                  <groupId>org.codehaus.mojo.signature</groupId>
+                  <artifactId>java17</artifactId>
+                  <version>1.0</version>
+               </signature>
+            </configuration>
+      </plugin>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
         <executions>
@@ -106,29 +131,7 @@ the License.
               <source>1.7</source>
               <target>1.7</target>
           </configuration>
-      </plugin>
-      <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-enforcer-plugin</artifactId>
-          <version>1.4.1</version>
-          <executions>
-              <execution>
-                  <id>enforce-java</id>
-                  <phase>validate</phase>
-                  <goals>
-                      <goal>enforce</goal>
-                  </goals>
-                  <configuration>
-                      <rules>
-                          <requireJavaVersion>
-                              <version>[1.7.0,1.8)</version>
-                              <message>Error:: Please use jdk7 for compilation.</message>
-                          </requireJavaVersion>
-                      </rules>
-                  </configuration>
-              </execution>
-          </executions>
-      </plugin>      
+      </plugin>  
     </plugins>
   </build>
     <profiles>

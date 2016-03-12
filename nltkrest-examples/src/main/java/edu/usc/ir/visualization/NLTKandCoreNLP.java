@@ -59,7 +59,7 @@ public class NLTKandCoreNLP {
         Metadata md;
         Tika t1=null;
         try {
-            t1 = new Tika(new TikaConfig(new File("tika-config.xml")));
+            t1 = new Tika(new TikaConfig(new File("src/main/resources/edu/usc/ir/visualization/tika-config.xml")));
         } catch (TikaException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -231,8 +231,9 @@ public class NLTKandCoreNLP {
         s[1] = nlp_json;
         Labels final_json = new Labels(labels, s);
         ObjectMapper mymapper = new ObjectMapper();
-        mymapper.writerWithDefaultPrettyPrinter().writeValue(new File(destination.getAbsolutePath() + "/nltk_vs_corenlp.json"), final_json);
-
+        destination = new File(destination.getAbsolutePath() + "/nltk_vs_corenlp.json");
+        mymapper.writerWithDefaultPrettyPrinter().writeValue(destination, final_json);
+        System.out.println("Json File: " + destination.getAbsolutePath());
     }
 
     public static Comparator<Names> compareByCount = new Comparator<Names>(){
@@ -241,53 +242,4 @@ public class NLTKandCoreNLP {
         }
     };
 
-    static class Labels{
-        ArrayList<String> labels;
-        Series[] series;
-        public Labels(ArrayList<String> labels, Series[] series) {
-            this.labels = labels;
-            this.series = series;
-        }
-        public ArrayList<String> getLabels() {
-            return labels;
-        }
-        public void setLabels(ArrayList<String> labels) {
-            this.labels = labels;
-        }
-        public Series[] getSeries() {
-            return series;
-        }
-        public void setSeries(Series[] series) {
-            this.series = series;
-        }
-    }
-
-    static class Series{
-        String name;
-        ArrayList<Integer> value;
-        Series(String name, ArrayList<Integer> value ){
-            this.name=name;
-            this.value=value;
-        }
-        public String getName() {
-            return name;
-        }
-        public void setName(String name) {
-            this.name = name;
-        }
-        public ArrayList<Integer> getValue() {
-            return value;
-        }
-        public void setValue(ArrayList<Integer> value) {
-            this.value = value;
-        }
-    }
-    static class Names{
-        String name;
-        int count;
-        Names(String x, int y){
-            name=x;
-            count=y;
-        }
-    }
 }

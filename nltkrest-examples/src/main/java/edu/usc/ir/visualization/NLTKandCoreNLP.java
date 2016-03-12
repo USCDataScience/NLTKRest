@@ -41,6 +41,7 @@ import org.apache.tika.parser.ner.NamedEntityParser;
 import org.apache.tika.parser.ner.nltk.NLTKNERecogniser;
 import org.xml.sax.SAXException;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -48,49 +49,65 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class NLTKandCoreNLP {
-    static FileWriter file;
-    static int size;
+    
+	private HashSet<String> freq; 
+    private HashMap<String, Integer> nltk;
+    private HashMap<String, Integer> nlp;
+    
+    private Tika tika;
+    private Metadata md;
+    public NLTKandCoreNLP(){
+    	freq = new HashSet<String>();
+     	nltk = new HashMap<String,Integer>();
+  		nlp = new HashMap<String,Integer>();
+  		tika = null;
+  		
+//  	Enable NLTK Named Entity Parser
+  		System.setProperty(NamedEntityParser.SYS_PROP_NER_IMPL, NLTKNERecogniser.class.getName());
+  		try {
+			tika = new Tika(new TikaConfig(NLTKandCoreNLP.class.getResourceAsStream("tika-config.xml")));
+		} catch (TikaException | IOException | SAXException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Could not load Tika");
+			e.printStackTrace();
+		}
+    }
+    
     public static void main(String m[]) throws JsonParseException, JsonMappingException, IOException{
-        HashSet<String> freq = new HashSet<String>();
-        HashMap<String, Integer> nltk = new HashMap<String,Integer>();
-        HashMap<String, Integer> nlp = new HashMap<String,Integer>();
-
-        System.setProperty(NamedEntityParser.SYS_PROP_NER_IMPL, NLTKNERecogniser.class.getName());
-        Metadata md;
-        Tika t1=null;
-        try {
-            t1 = new Tika(new TikaConfig(new File("src/main/resources/edu/usc/ir/visualization/tika-config.xml")));
-        } catch (TikaException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (SAXException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        
         String memexUrl = m[0];
         String username = m[1];
         String password = m[2];
         File destination =new File(m[3]);
-
-        // create an ObjectMapper instance.
+        NLTKandCoreNLP obj = new NLTKandCoreNLP();
+        
+        //count frequency of entities extracted using NLTK and CoreNLP
+        obj.countNER(memexUrl, username, password);
+        obj.createJSON(destination);
+        
+    }
+    
+    private void countNER(String memexUrl, String username, String password) throws JsonParseException, JsonMappingException, IOException {
+    	// create an ObjectMapper instance.
         ObjectMapper mapper = new ObjectMapper();
         // use the ObjectMapper to read the json string and create a tree
 
         JsonNode node;
         JsonNode dataset=null;
-        for(int c=1; c<200; c+=100)
+        String url;
+        String response;
+        
+        for(int c=0; c<501; c+=100)
         {
-
-            String url = memexUrl + "/select?q=gunsamerica&start="+c+"&rows=100&fl=content%2Corganizations%2Cpersons%2Cdates%2Clocations&wt=json&indent=true";
-            Response response = WebClient.create(url, username, password, null).accept(MediaType.APPLICATION_JSON).get();
-            String resp = response.readEntity(String.class);
-
+            url = memexUrl + "/select?q=gunsamerica&start="+c+"&rows=100&fl=content%2Corganizations%2Cpersons%2Cdates%2Clocations&wt=json&indent=true";
+            response = WebClient
+            		   .create(url, username, password, null)
+            		   .accept(MediaType.APPLICATION_JSON)
+            		   .get()
+            		   .readEntity(String.class);
 
             try {
-                node = mapper.readTree(resp);
+                node = mapper.readTree(response);
                 dataset= node.get("response").get("docs");
             } catch (JsonProcessingException e) {
                 // TODO Auto-generated catch block
@@ -99,18 +116,21 @@ public class NLTKandCoreNLP {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-
+            
             Iterator<JsonNode> datasetElements = dataset.iterator();
+            
             while (datasetElements.hasNext()) {
                 JsonNode datasetElement = datasetElements.next();
                 String content = datasetElement.get("content").asText();
                 md = new Metadata();
                 try (InputStream stream = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))) {
-                    t1.parse(stream, md);
+                    tika.parse(stream, md);
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
+                
+//                extract CoreNLP locations entity 
                 if(datasetElement.has("locations")){
                     String names[]=null;
                     names = mapper.readValue(datasetElement.get("locations").toString(),String[].class);
@@ -127,21 +147,8 @@ public class NLTKandCoreNLP {
                         }
                     }
                 }
-                if(md.getValues("NER_NAMES").length > 0){
-                    for(String ner_name: Arrays.asList(md.getValues("NER_NAMES"))){
-                        if(!freq.contains(ner_name)){
-                            freq.add(ner_name);
-                        }
-                        if(nltk.containsKey(ner_name)){
-                            nltk.put(ner_name, nltk.get(ner_name) + 1);
-                        }
-                        else{
-                            nltk.put(ner_name, 1);
-                        }
-                    }
-                }
-
-
+                
+//                extract CoreNLP dates entity
                 if(datasetElement.has("dates")){
                     String names[]=null;
                     names= mapper.readValue(datasetElement.get("dates").toString(),String[].class);
@@ -159,6 +166,7 @@ public class NLTKandCoreNLP {
 
                 }
 
+//                extract CoreNLP organizations entity
                 if(datasetElement.has("organizations")){
                     String names[]=null;
                     names= mapper.readValue(datasetElement.get("organizations").toString(),String[].class);
@@ -174,7 +182,8 @@ public class NLTKandCoreNLP {
                         }
                     }
                 }
-
+                
+//                extract CoreNLP persons entity
                 if(datasetElement.has("persons")){
                     String names[]=null;
                     names= mapper.readValue(datasetElement.get("persons").toString(),String[].class);
@@ -190,9 +199,30 @@ public class NLTKandCoreNLP {
                         }
                     }
                 }
+                
+//                use NLTK entities generated by Tika NLTKNERecognizer Parser
+                if(md.getValues("NER_NAMES").length > 0){
+                    for(String ner_name: Arrays.asList(md.getValues("NER_NAMES"))){
+                        if(!freq.contains(ner_name)){
+                            freq.add(ner_name);
+                        }
+                        if(nltk.containsKey(ner_name)){
+                            nltk.put(ner_name, nltk.get(ner_name) + 1);
+                        }
+                        else{
+                            nltk.put(ner_name, 1);
+                        }
+                    }
+                }
+                //continue for each url in response.
             }
+            //fetch new set of urls
         }
-        ArrayList<Names> frequencies = new ArrayList<Names>();
+    }
+
+	private void createJSON(File destination) throws JsonGenerationException, JsonMappingException, IOException {
+		// TODO Auto-generated method stub
+		ArrayList<Names> frequencies = new ArrayList<Names>();
         for(String val:freq){
             int x=0;
             int y=0;
@@ -202,15 +232,19 @@ public class NLTKandCoreNLP {
             if(nlp.containsKey(val)){
                 y = nlp.get(val);
             }
-            frequencies.add(new Names(val, Math.abs(x-y) ));
+            int z = x+y-Math.abs(x-y);
+            if(z==0){
+            	z = x>y?0:-y;
+            }
+            frequencies.add(new Names(val, z ));
         }
-        Collections.sort(frequencies, compareByCount);
-        ArrayList<String> labels = new ArrayList<String>();
+        Collections.sort(frequencies, maximumOverlap);
+        ArrayList<String> final_labels = new ArrayList<String>();
         ArrayList<Integer> nltk_value = new ArrayList<Integer>();
         ArrayList<Integer> nlp_value = new ArrayList<Integer>();
         for(int i=0; i<frequencies.size(); i++){
             String value = frequencies.get(i).name;
-            labels.add(value);
+            final_labels.add(value);
             if(nltk.containsKey(value)){
                 nltk_value.add(nltk.get(value));
             }
@@ -224,21 +258,18 @@ public class NLTKandCoreNLP {
                 nlp_value.add(0);
             }
         }
-        Series nltk_json = new Series("nltk", nltk_value);
-        Series nlp_json = new Series("nlp", nlp_value);
-        Series []s = new Series[2];
-        s[0] = nltk_json;
-        s[1] = nlp_json;
-        Labels final_json = new Labels(labels, s);
-        ObjectMapper mymapper = new ObjectMapper();
+        //Formating the required json for visualization in https://github.com/manalishah/Tika-NLTKvsCoreNLP.git
+        Series []s = {new Series("nltk", nltk_value),new Series("nlp", nlp_value)};
+        Labels labels = new Labels(final_labels, s);
+        ObjectMapper mapper = new ObjectMapper();
         destination = new File(destination.getAbsolutePath() + "/nltk_vs_corenlp.json");
-        mymapper.writerWithDefaultPrettyPrinter().writeValue(destination, final_json);
-        System.out.println("Json File: " + destination.getAbsolutePath());
-    }
+        mapper.writerWithDefaultPrettyPrinter().writeValue(destination, labels);
+        System.out.println("Json ready for Visualization: " + destination.getAbsolutePath());
+	}
 
-    public static Comparator<Names> compareByCount = new Comparator<Names>(){
+	public static Comparator<Names> maximumOverlap = new Comparator<Names>(){
         public int compare(Names one, Names two) {
-            return (int)one.count - (int)two.count;
+            return (int)two.strength - (int)one.strength;
         }
     };
 

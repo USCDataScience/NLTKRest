@@ -246,9 +246,9 @@ the License.
     <dependency>
       <groupId>org.apache.tika</groupId>
       <artifactId>tika-app</artifactId>
-      <version>1.13</version>
-      <scope>system</scope>
-      <systemPath>/Users/manali/cs599_dr/tika/tika-app/target/tika-app-1.13-SNAPSHOT.jar</systemPath>
+      <version>1.13-SNAPSHOT</version>
+      <!-- <scope>system</scope>
+      <systemPath>/Users/manali/cs599_dr/tika/tika-app/target/tika-app-1.13-SNAPSHOT.jar</systemPath> -->
     </dependency>
   </dependencies>
 </project>

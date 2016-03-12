@@ -2,9 +2,9 @@ package edu.usc.ir.visualization;
 
 public class Names {
 	String name;
-    int count;
+    int strength;
     Names(String x, int y){
         name=x;
-        count=y;
+        strength=y;
     }
 }

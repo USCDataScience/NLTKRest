@@ -16,7 +16,6 @@
  */
 package edu.usc.ir.nltkrest;
 
-import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
 import org.apache.cxf.jaxrs.client.WebClient;
 

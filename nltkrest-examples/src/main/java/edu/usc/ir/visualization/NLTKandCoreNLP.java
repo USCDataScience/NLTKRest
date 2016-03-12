@@ -67,7 +67,6 @@ public class NLTKandCoreNLP {
   		try {
 			tika = new Tika(new TikaConfig(NLTKandCoreNLP.class.getResourceAsStream("tika-config.xml")));
 		} catch (TikaException | IOException | SAXException e) {
-			// TODO Auto-generated catch block
 			System.out.println("Could not load Tika");
 			e.printStackTrace();
 		}
@@ -110,10 +109,8 @@ public class NLTKandCoreNLP {
                 node = mapper.readTree(response);
                 dataset= node.get("response").get("docs");
             } catch (JsonProcessingException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             
@@ -127,7 +124,6 @@ public class NLTKandCoreNLP {
                     tika.parse(stream, md);
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
-                    e.printStackTrace();
                 }
                 
 //                extract CoreNLP locations entity 
@@ -138,7 +134,6 @@ public class NLTKandCoreNLP {
                         if(!freq.contains(names[i])){
                             freq.add(names[i]);
                         }
-
                         if(nlp.containsKey(names[i])){
                             nlp.put(names[i], nlp.get(names[i]) + 1);
                         }

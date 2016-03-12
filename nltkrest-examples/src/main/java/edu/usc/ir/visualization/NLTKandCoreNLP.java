@@ -62,7 +62,6 @@ public class NLTKandCoreNLP {
   		nlp = new HashMap<String,Integer>();
   		tika = null;
   		
-//  	Enable NLTK Named Entity Parser
   		System.setProperty(NamedEntityParser.SYS_PROP_NER_IMPL, NLTKNERecogniser.class.getName());
   		try {
 			tika = new Tika(new TikaConfig(NLTKandCoreNLP.class.getResourceAsStream("tika-config.xml")));

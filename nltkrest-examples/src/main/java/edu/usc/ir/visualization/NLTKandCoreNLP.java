@@ -53,15 +53,18 @@ public class NLTKandCoreNLP {
 	private HashSet<String> freq; 
     private HashMap<String, Integer> nltk;
     private HashMap<String, Integer> nlp;
-    
+    private JsonNode datasetElement;
     private Tika tika;
     private Metadata md;
+    private ObjectMapper mapper;
+    
     public NLTKandCoreNLP(){
     	freq = new HashSet<String>();
      	nltk = new HashMap<String,Integer>();
   		nlp = new HashMap<String,Integer>();
   		tika = null;
-  		
+  		datasetElement=null;
+        mapper = new ObjectMapper();
   		System.setProperty(NamedEntityParser.SYS_PROP_NER_IMPL, NLTKNERecogniser.class.getName());
   		try {
 			tika = new Tika(new TikaConfig(NLTKandCoreNLP.class.getResourceAsStream("tika-config.xml")));
@@ -86,11 +89,8 @@ public class NLTKandCoreNLP {
     }
     
     private void countNER(String memexUrl, String username, String password) throws JsonParseException, JsonMappingException, IOException {
-    	// create an ObjectMapper instance.
-        ObjectMapper mapper = new ObjectMapper();
-        // use the ObjectMapper to read the json string and create a tree
 
-        JsonNode node;
+    	JsonNode node;
         JsonNode dataset=null;
         String url;
         String response;
@@ -116,7 +116,7 @@ public class NLTKandCoreNLP {
             Iterator<JsonNode> datasetElements = dataset.iterator();
             
             while (datasetElements.hasNext()) {
-                JsonNode datasetElement = datasetElements.next();
+                datasetElement = datasetElements.next();
                 String content = datasetElement.get("content").asText();
                 md = new Metadata();
                 try (InputStream stream = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))) {
@@ -125,84 +125,51 @@ public class NLTKandCoreNLP {
                 	e.printStackTrace();
                 }
                 
-                if(datasetElement.has("locations")){
-                    String names[]=null;
-                    names = mapper.readValue(datasetElement.get("locations").toString(),String[].class);
-                    for(int i=0; i<names.length; i++){
-                        if(!freq.contains(names[i])){
-                            freq.add(names[i]);
-                        }
-                        if(nlp.containsKey(names[i])){
-                            nlp.put(names[i], nlp.get(names[i]) + 1);
-                        }
-                        else{
-                            nlp.put(names[i], 1);
-                        }
-                    }
+                if(datasetElement.has("locations")) {
+                	extract("locations");
                 }
                 
-                if(datasetElement.has("dates")){
-                    String names[]=null;
-                    names= mapper.readValue(datasetElement.get("dates").toString(),String[].class);
-                    for(int i=0; i<names.length; i++){
-                        if(!freq.contains(names[i])){
-                            freq.add(names[i]);
-                        }
-                        if(nlp.containsKey(names[i])){
-                            nlp.put(names[i], nlp.get(names[i]) + 1);
-                        }
-                        else{
-                            nlp.put(names[i], 1);
-                        }
-                    }
-
+                if(datasetElement.has("dates")) {
+                	extract("organizations");
                 }
 
-                if(datasetElement.has("organizations")){
-                    String names[]=null;
-                    names= mapper.readValue(datasetElement.get("organizations").toString(),String[].class);
-                    for(int i=0; i<names.length; i++){
-                        if(!freq.contains(names[i])){
-                            freq.add(names[i]);
-                        }
-                        if(nlp.containsKey(names[i])){
-                            nlp.put(names[i], nlp.get(names[i]) + 1);
-                        }
-                        else{
-                            nlp.put(names[i], 1);
-                        }
-                    }
+                if(datasetElement.has("organizations")) {
+                    extract("organizations");
                 }
                 
-                if(datasetElement.has("persons")){
-                    String names[]=null;
-                    names= mapper.readValue(datasetElement.get("persons").toString(),String[].class);
-                    for(int i=0; i<names.length; i++){
-                        if(!freq.contains(names[i])){
-                            freq.add(names[i]);
-                        }
-                        if(nlp.containsKey(names[i])){
-                            nlp.put(names[i], nlp.get(names[i]) + 1);
-                        }
-                        else{
-                            nlp.put(names[i], 1);
-                        }
-                    }
+                if(datasetElement.has("persons")) {
+                	extract("persons");
                 }
                 
-                if(md.getValues("NER_NAMES").length > 0){
-                    for(String ner_name: Arrays.asList(md.getValues("NER_NAMES"))){
-                        if(!freq.contains(ner_name)){
+                if(md.getValues("NER_NAMES").length > 0) {
+                    for(String ner_name: Arrays.asList(md.getValues("NER_NAMES"))) {
+                        if(!freq.contains(ner_name)) {
                             freq.add(ner_name);
                         }
-                        if(nltk.containsKey(ner_name)){
+                        if(nltk.containsKey(ner_name)) {
                             nltk.put(ner_name, nltk.get(ner_name) + 1);
                         }
-                        else{
+                        else {
                             nltk.put(ner_name, 1);
                         }
                     }
                 }
+            }
+        }
+    }
+    
+    private void extract(String ner) throws JsonParseException, JsonMappingException, IOException{
+    	String names[]=null;
+        names= mapper.readValue(datasetElement.get(ner).toString(),String[].class);
+        for(int i=0; i<names.length; i++){
+            if(!freq.contains(names[i])){
+                freq.add(names[i]);
+            }
+            if(nlp.containsKey(names[i])){
+                nlp.put(names[i], nlp.get(names[i]) + 1);
+            }
+            else{
+                nlp.put(names[i], 1);
             }
         }
     }
@@ -224,6 +191,7 @@ public class NLTKandCoreNLP {
             }
             frequencies.add(new Names(val, z ));
         }
+        
         Collections.sort(frequencies, maximumOverlap);
         ArrayList<String> final_labels = new ArrayList<String>();
         ArrayList<Integer> nltk_value = new ArrayList<Integer>();

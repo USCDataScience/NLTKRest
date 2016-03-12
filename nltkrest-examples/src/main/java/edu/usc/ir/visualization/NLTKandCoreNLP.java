@@ -97,7 +97,7 @@ public class NLTKandCoreNLP {
         String url;
         String response;
         
-        for(int c=0; c<501; c+=100)
+        for(int c=0; c<101; c+=100)
         {
             url = memexUrl + "/select?q=gunsamerica&start="+c+"&rows=100&fl=content%2Corganizations%2Cpersons%2Cdates%2Clocations&wt=json&indent=true";
             response = WebClient

@@ -38,7 +38,18 @@ Connecting to NLTKRest at: [http://localhost:8881/nltk]
     "result": "success"
 }
 ```
+Generating JSON for comparing NLTK and CoreNLP 
+==============================================
+NLTKandCoreNLP compares the results of Named Entities recognized by Stanford CoreNLP against those extracted by Tika trunk containing ability to use NLTKNeRecignizer Parser.
 
+1. `java -cp target/nltkrest-examples-1.0-SNAPSHOT.jar edu.usc.ir.visualization.NLTKandCoreNLP "url/to/solr/dev" "username" "password" "path/to/destination/folder"`
+
+Which should return:
+
+```
+Json ready for Visualization: path/to/destination/folder/nltk_vs_corenlp.json
+```
+You can then follow the procedure to see a beautiful visualization using instructions from [Tika-NLTKvsCoreNLP](https://github.com/manalishah/Tika-NLTKvsCoreNLP.git)
 
 Questions, comments?
 ===================

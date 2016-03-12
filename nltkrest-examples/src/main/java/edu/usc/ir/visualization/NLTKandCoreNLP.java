@@ -123,7 +123,7 @@ public class NLTKandCoreNLP {
                 try (InputStream stream = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8))) {
                     tika.parse(stream, md);
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
+                	e.printStackTrace();
                 }
                 
 //                extract CoreNLP locations entity 

@@ -18,7 +18,6 @@ package edu.usc.ir.visualization;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -30,7 +29,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MediaType;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.tika.Tika;
@@ -58,7 +56,8 @@ public class NLTKandCoreNLP {
     private Metadata md;
     private ObjectMapper mapper;
     
-    public NLTKandCoreNLP(){
+    public NLTKandCoreNLP() {
+    	
     	freq = new HashSet<String>();
      	nltk = new HashMap<String,Integer>();
   		nlp = new HashMap<String,Integer>();
@@ -74,15 +73,13 @@ public class NLTKandCoreNLP {
 		}
     }
     
-    public static void main(String m[]) throws JsonParseException, JsonMappingException, IOException{
+    public static void main(String m[]) throws JsonParseException, JsonMappingException, IOException {
         
         String memexUrl = m[0];
         String username = m[1];
         String password = m[2];
         File destination =new File(m[3]);
         NLTKandCoreNLP obj = new NLTKandCoreNLP();
-        
-        //count frequency of entities extracted using NLTK and CoreNLP
         obj.countNER(memexUrl, username, password);
         obj.createJSON(destination);
         
@@ -95,8 +92,8 @@ public class NLTKandCoreNLP {
         String url;
         String response;
         
-        for(int c=0; c<101; c+=100)
-        {
+        for (int c=0; c<101; c+=100) {
+        	
             url = memexUrl + "/select?q=gunsamerica&start="+c+"&rows=100&fl=content%2Corganizations%2Cpersons%2Cdates%2Clocations&wt=json&indent=true";
             response = WebClient
             		   .create(url, username, password, null)
@@ -158,17 +155,16 @@ public class NLTKandCoreNLP {
         }
     }
     
-    private void extract(String ner) throws JsonParseException, JsonMappingException, IOException{
+    private void extract(String ner) throws JsonParseException, JsonMappingException, IOException {
     	String names[]=null;
         names= mapper.readValue(datasetElement.get(ner).toString(),String[].class);
-        for(int i=0; i<names.length; i++){
-            if(!freq.contains(names[i])){
+        for(int i=0; i<names.length; i++) {
+            if(!freq.contains(names[i])) {
                 freq.add(names[i]);
             }
-            if(nlp.containsKey(names[i])){
+            if(nlp.containsKey(names[i])) {
                 nlp.put(names[i], nlp.get(names[i]) + 1);
-            }
-            else{
+            } else {
                 nlp.put(names[i], 1);
             }
         }
@@ -176,39 +172,31 @@ public class NLTKandCoreNLP {
 
 	private void createJSON(File destination) throws JsonGenerationException, JsonMappingException, IOException {
 		ArrayList<Names> frequencies = new ArrayList<Names>();
-        for(String val:freq){
-            int x=0;
-            int y=0;
-            if(nltk.containsKey(val)){
-                x = nltk.get(val);
-            }
-            if(nlp.containsKey(val)){
-                y = nlp.get(val);
-            }
+        for (String value:freq) {
+            int x = nltk.containsKey(value)?nltk.get(value):0;
+            int y = nlp.containsKey(value)?nlp.get(value):0;
             int z = x+y-Math.abs(x-y);
-            if(z==0){
+            if (z==0) {
             	z = x>y?0:-y;
             }
-            frequencies.add(new Names(val, z ));
+            frequencies.add(new Names(value, z ));
         }
         
         Collections.sort(frequencies, maximumOverlap);
         ArrayList<String> final_labels = new ArrayList<String>();
         ArrayList<Integer> nltk_value = new ArrayList<Integer>();
         ArrayList<Integer> nlp_value = new ArrayList<Integer>();
-        for(int i=0; i<frequencies.size(); i++){
+        for (int i=0; i<frequencies.size(); i++) {
             String value = frequencies.get(i).name;
             final_labels.add(value);
-            if(nltk.containsKey(value)){
+            if (nltk.containsKey(value)) {
                 nltk_value.add(nltk.get(value));
-            }
-            else{
+            } else {
                 nltk_value.add(0);
             }
-            if(nlp.containsKey(value)){
+            if (nlp.containsKey(value)) {
                 nlp_value.add(nlp.get(value));
-            }
-            else{
+            } else {
                 nlp_value.add(0);
             }
         }
@@ -221,7 +209,7 @@ public class NLTKandCoreNLP {
         System.out.println("Json ready for Visualization: " + destination.getAbsolutePath());
 	}
 
-	public static Comparator<Names> maximumOverlap = new Comparator<Names>(){
+	public static Comparator<Names> maximumOverlap = new Comparator<Names>() {
         public int compare(Names one, Names two) {
             return (int)two.strength - (int)one.strength;
         }

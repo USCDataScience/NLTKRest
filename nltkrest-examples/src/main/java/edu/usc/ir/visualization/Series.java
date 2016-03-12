@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public class Series {
 	String name;
     ArrayList<Integer> value;
-    Series(String name, ArrayList<Integer> value ){
+    Series(String name, ArrayList<Integer> value ) {
         this.name=name;
         this.value=value;
     }

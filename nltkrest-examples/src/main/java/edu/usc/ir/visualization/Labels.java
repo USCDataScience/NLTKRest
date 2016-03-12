@@ -19,7 +19,7 @@ package edu.usc.ir.visualization;
 import java.util.ArrayList;
 import edu.usc.ir.visualization.Series;
 
-public class Labels{
+public class Labels {
     ArrayList<String> labels;
     Series[] series;
     public Labels(ArrayList<String> labels, Series[] series) {

@@ -21,7 +21,7 @@ the License.
   <groupId>edu.usc.ir</groupId>
   <artifactId>nltkrest-examples</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <name>NLTK REST Java Example Client</name>
   <description>Java REST client examples for NLTK integration with Tika</description>
   <url>https://github.com/manalishah/NLTKRest</url>

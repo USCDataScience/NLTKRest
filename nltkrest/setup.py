@@ -65,7 +65,7 @@ try:
 except ImportError:
     from distutils.core import setup, find_packages
 
-version = '0.11'
+version = '0.12'
 
 _descr = u'''
 **********

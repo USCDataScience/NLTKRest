@@ -6,13 +6,14 @@ to be called as a REST service. The package can be installed via pip and/or via 
 ## Installation
 
 ### Simple with PIP
-
- 1. Just run `pip install nltkrest`
+**Note: nltkrest is compatible with python2.7 only due to its dependency on nltk_contrib.**
+ 1. Just run `pip install --process-dependency-links nltkrest`
  
 Please note, that b/c of the [NLTK Contrib](http://github.com/manalishah/nltk_contrib) fork
 that we depend on and overall the fork and its upstreams unavailability in PyPI, we have to
 use dependency_links, which may not be supported in pip in the future. You may need to pass
-the `--process-dependency-links` to pip in order to install the software.
+the `--process-dependency-links` to pip in order to install the software. 
+
 
 ### Setuptools and/or Distribute
  

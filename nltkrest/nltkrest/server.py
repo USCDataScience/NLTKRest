@@ -61,10 +61,14 @@ def namedEntityRecognizer():
     date_time = timex.tag(content)
     tokenized = nltk.word_tokenize(content)
     tagged = nltk.pos_tag(tokenized)
+    grammar = """unit: {<CD><NNS>?<NN.*>?},
+                 unit: {<CD><JJ>?<NN.*>?}"""
+    parser = nltk.RegexpParser(grammar)
+    units = extract_entity_names(parser.parse(tagged),'unit')
     namedEnt = nltk.ne_chunk(tagged, binary=True)
-    names = extract_entity_names(namedEnt)
+    names = extract_entity_names(namedEnt, 'NE')
     names.extend(date_time)
-    result = {"result" : "success", "names" : names}
+    result = {"result" : "success", "names" : names, "units" : units}
     jsonDoc = json.dumps(result, sort_keys=True, indent=4, separators=(',', ': '))
     end = time.time()
     print "NER took "+str(end - start)+" seconds"
@@ -73,14 +77,14 @@ def namedEntityRecognizer():
 
 # Based on example from:
 # https://gist.github.com/onyxfish/322906
-def extract_entity_names(t):
+def extract_entity_names(t,label):
     entity_names = []
     if hasattr(t, 'label') and t.label:
-        if t.label() == 'NE':
+        if t.label() == label:
             entity_names.append(' '.join([child[0] for child in t]))
         else:
             for child in t:
-                entity_names.extend(extract_entity_names(child))
+                entity_names.extend(extract_entity_names(child, label))
     return entity_names
 
 def main(argv=None):

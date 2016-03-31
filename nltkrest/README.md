@@ -29,6 +29,12 @@ To begin, start the server, turn on verbose mode, and change the port to 8888.
 
 `nltk-server -v --port 8888`
 
+**Measurement Extraction** 
+
+Start the server along with measurement extraction feature enabled using `-u or --units`.
+
+`nltk-server -v --port 8888 -u`
+
 ## Example cURL client command
 
 Now from the client, execute the following command:
@@ -68,6 +74,27 @@ Which should return:
         "tomorrow",
         "2016"
     ],
+    "result": "success"
+}
+```
+
+## Example cURL client command with Measurement Extraction enabled
+
+We have added support for extracting measurements from text. You can test it out by adding some measurement information to your text.
+
+`curl -X POST -d "The temperature outside is 20 degree Celsius. I study at University of Southern California." http://localhost:8881/nltk`
+
+Which should return:
+
+```
+{
+    "names": [
+        "University",
+        "Southern California"
+    ],
+    "units": [
+        "20 degree Celsius"
+    ]
     "result": "success"
 }
 ```

@@ -27,16 +27,18 @@ import sys
 import getopt
 
 USAGE = """
-nltk-rest --port -p <port> -v [--help -h]
+nltk-rest --port -p <port> -v units -u [--help -h]
 
 Expose NLTK over REST as a server using Python Flask. Submit content to the
 `/nltk` endpoint in the REST body request. 
 
 -h, --help Prints this message.
 -p, --port Sets the port for the REST server, default is 8881.
+-u, --units Enable parser to extract measurements from text
 """
 Verbose = 0
 Port = 8881 #default port
+Units = 0
 def echo2(*s): sys.stderr.write('server.py [NLTK]: ' + ' '.join(map(str, s)) + '\n')
 app = Flask(__name__)
 
@@ -61,14 +63,18 @@ def namedEntityRecognizer():
     date_time = timex.tag(content)
     tokenized = nltk.word_tokenize(content)
     tagged = nltk.pos_tag(tokenized)
-    grammar = """unit: {<CD><NNS>?<NN.*>?},
-                 unit: {<CD><JJ>?<NN.*>?}"""
-    parser = nltk.RegexpParser(grammar)
-    units = extract_entity_names(parser.parse(tagged),'unit')
     namedEnt = nltk.ne_chunk(tagged, binary=True)
     names = extract_entity_names(namedEnt, 'NE')
     names.extend(date_time)
-    result = {"result" : "success", "names" : names, "units" : units}
+    result = {"result" : "success", "names" : names}
+    if Units:
+        grammar = '''unit: {<CD><NNS>?<NN.*>?},
+                     unit: {<CD><JJ>?<NN.*>?},
+                     unit: {<CD>}
+                  '''
+        parser = nltk.RegexpParser(grammar)
+        units = extract_entity_names(parser.parse(tagged),'unit')
+        result['units'] = units
     jsonDoc = json.dumps(result, sort_keys=True, indent=4, separators=(',', ': '))
     end = time.time()
     print "NER took "+str(end - start)+" seconds"
@@ -77,7 +83,7 @@ def namedEntityRecognizer():
 
 # Based on example from:
 # https://gist.github.com/onyxfish/322906
-def extract_entity_names(t,label):
+def extract_entity_names(t, label):
     entity_names = []
     if hasattr(t, 'label') and t.label:
         if t.label() == label:
@@ -90,12 +96,13 @@ def extract_entity_names(t,label):
 def main(argv=None):
     """Run NLTK REST server from command line according to USAGE."""
     global Verbose
+    global Units
     if argv is None:
         argv = sys.argv
 
     try:
-        opts, argv = getopt.getopt(argv[1:], 'hp:v',
-          ['help', 'port=', 'verbose'])
+        opts, argv = getopt.getopt(argv[1:], 'hp:vu',
+          ['help', 'port=', 'verbose', 'units'])
     except getopt.GetoptError, (msg, bad_opt):
         die("%s error: Bad option: %s, %s" % (argv[0], bad_opt, msg))
         
@@ -104,6 +111,7 @@ def main(argv=None):
         if opt   in ('-h', '--help'):    echo2(USAGE); sys.exit()
         elif opt in ('--port'):          port = int(val)
         elif opt in ('-v', '--verbose'): Verbose = 1
+        elif opt in ('-u', '--units'):   Units = 1
         else: die(USAGE)
 
     app.run(debug=Verbose, port=port)

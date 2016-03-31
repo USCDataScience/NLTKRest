@@ -69,8 +69,7 @@ def namedEntityRecognizer():
     result = {"result" : "success", "names" : names}
     if Units:
         grammar = '''unit: {<CD><NNS>?<NN.*>?},
-                     unit: {<CD><JJ>?<NN.*>?},
-                     unit: {<CD>}
+                     unit: {<CD><JJ>?<NN.*>}
                   '''
         parser = nltk.RegexpParser(grammar)
         units = extract_entity_names(parser.parse(tagged),'unit')

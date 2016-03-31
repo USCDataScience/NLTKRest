@@ -80,18 +80,17 @@ Which should return:
 
 ## Example cURL client command with Measurement Extraction enabled
 
-We have added support for extracting measurements from text. You can test it out by adding some date/time information to your text.
+We have added support for extracting measurements from text. You can test it out by adding some measurement information to your text.
 
-`curl -X POST -d "My name is Abraham Lincoln. I live in Los Angeles, California. The temperature outside is 20 degree Celsius." http://localhost:8881/nltk`
+`curl -X POST -d "The temperature outside is 20 degree Celsius. I study at University of Southern California." http://localhost:8881/nltk`
 
 Which should return:
 
 ```
 {
     "names": [
-        "Abraham Lincoln",
-        "Los Angeles",
-        "California"
+        "University",
+        "Southern California"
     ],
     "units": [
         "20 degree Celsius"

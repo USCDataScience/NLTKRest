@@ -29,6 +29,12 @@ To begin, start the server, turn on verbose mode, and change the port to 8888.
 
 `nltk-server -v --port 8888`
 
+**Measurement Extraction** 
+
+Start the server along with measurement extraction feature enabled using `-u or --units`.
+
+`nltk-server -v --port 8888 -u`
+
 ## Example cURL client command
 
 Now from the client, execute the following command:
@@ -51,26 +57,27 @@ You should see back:
 
 ## Example cURL client command with Dates/Times
 
-We have added support for dates/times using the [NLTK Contrib Timex](https://github.com/nltk/nltk_contrib/blob/master/nltk_contrib/timex.py)
-module. You can test it out by adding some date/time information to your text.
+We have added support for extracting measurements from text. You can test it out by adding some date/time information to your text.
 
-`curl -X POST -d "Hi, my name is Abraham Lincoln. I live in Los Angeles, California. Let's hang out tomorrow, Friday, February 26, 2016." http://localhost:8881/nltk`
+`curl -X POST -d "My name is Abraham Lincoln. I live in Los Angeles, California. The temperature outside is 20 degree Celsius." http://localhost:8881/nltk`
 
 Which should return:
 
 ```
 {
     "names": [
-        "Hi",
         "Abraham Lincoln",
         "Los Angeles",
-        "California",
-        "tomorrow",
-        "2016"
+        "California"
     ],
+    "units": [
+        "20 degree Celsius"
+    ]
     "result": "success"
 }
 ```
+## Example cURL client command with Measurement Extraction enabled
+
 
 You can use `PUT` or `POST` to send a message to the server. Also if you just contact at the `/` default endpoint,
 you will see an HTML page that prints the status of the service.

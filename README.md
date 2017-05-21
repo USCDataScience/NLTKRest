@@ -6,10 +6,10 @@ This project provides a Work in progress implementation of exposing the
 
 There are two projects. 
 
- * [NLTK REST](https://github.com/chrismattmann/NLTKRest/tree/master/nltkrest) - the 
+ * [NLTK REST](https://github.com/USCDataScience/NLTKRest/tree/master/nltkrest) - the 
    server itself, a Python PIP/setuptools installable version of exposing NLTK as REST
    using Flask.
- * [NLTK REST Examples](https://github.com/chrismattmann/NLTKRest/tree/master/nltkrest-examples) - 
+ * [NLTK REST Examples](https://github.com/USCDataScience/NLTKRest/tree/master/nltkrest-examples) - 
    an [Apache CXF](http://cxf.apache.org/) REST client that tests out the NLTK REST server.
 
 Questions, comments?
